@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.crackit.afyadaktari.utils.Constants.REGISTER_PHONE_VERIFICATION_TIMEOUT;
 
 @RestController
-@RequestMapping(value = EndPoints.REGISTER_ENDPOINT)
+@RequestMapping(value = EndPoints.REGISTER)
 public class RegisterController {
     public final UserRepository userRepository;
     public final OTPRepository otpRepository;

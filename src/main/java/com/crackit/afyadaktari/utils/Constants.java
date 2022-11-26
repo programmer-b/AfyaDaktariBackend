@@ -11,21 +11,23 @@ public class Constants {
     public static final String KEY_TOAST_PAYLOAD = "ToastPayload";
     public static final String KEY_DATA = "data";
     public static final String KEY_TOAST = "toast";
-    public static final String KEY_MESSAGE = "toast";
+    public static final String KEY_MESSAGE = "message";
     public static final String KEY_OTP_VALIDITY = "otp_validity";
     public static final String KEY_ERROR_PAYLOAD = "ErrorPayload";
     public static final String KEY_ERRORS = "errors";
     public static final String KEY_OTP = "otp";
     public static final String KEY_PROFILE_UPDATED = "profile_updated";
     public static final String KEY_MOBILE_VERIFIED = "mobile_verified";
-
+    public static final String KEY_USERNAME_OR_MOBILE = "username_or_mobile";
     public static Long REGISTER_PHONE_VERIFICATION_TIMEOUT = 120L * 1000L;
     public static final long TOKEN_VALIDITY = 10 * 60 * 60;
     public static final String JWT_SECRET = "asfSFS34wfsdfsdfSDSD32asfSFS34wfsdfsasdfSFS34wfsdfsdfSDSD32dfsDDerSNACK34SOWED5354fdgdf4dfSDSD32dfsddDDerQSNCK34SOWED5354fdgdf4dfsddDDerQSNCK34SOWED5354fdgdf4";
     public static final String REGISTER_SUCCESS_MESSAGE = "Registration successful. An OTP has been sent to verify your phone number.";
+    public static final String LOGIN_SUCCESS_MESSAGE = "You have logged in successfully.";
     public static final String INVALID_TOKEN_MESSAGE = "Your request was made with invalid credentials";
     public static final String EMPTY_TOKEN_MESSAGE = "Hey you! Make sure you have a token before requesting for anything.";
     public static final String EXPIRED_TOKEN_MESSAGE = "Your session has already expired";
-    public static final String OTP_VERIFICATION_SUCCESS = "OTP verified successfully";
+    public static final String OTP_VERIFICATION_SUCCESS_MESSAGE = "OTP verified successfully";
     public static final String OTP_RESEND_SUCCESS_MESSAGE = "OTP was re sent to your mobile successfully";
+    public static final String BAD_CREDENTIALS_MESSAGE = "Bad credentials";
 }

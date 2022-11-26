@@ -1,11 +1,15 @@
 package com.crackit.afyadaktari.utils;
 
 import com.crackit.afyadaktari.model.auth.OTP;
+import com.crackit.afyadaktari.model.auth.User;
 import com.crackit.afyadaktari.repository.OTPRepository;
 import com.crackit.afyadaktari.repository.UserRepository;
+import com.crackit.afyadaktari.service.password.PasswordUtils;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,21 +124,8 @@ public class StringUtils {
     }
 
     public static Long generateOTP() {
-        Random rnd = new Random();
-        int number = rnd.nextInt(999999);
-
-        String otp  = String.format("%06d", number);
-
-        otp = switch (otp.length()) {
-                case 5 -> otp + "8";
-                case 4 -> otp + "65";
-                case 3 -> otp + "546";
-                case 2 -> otp + "5436";
-                case 1 -> otp + "95382";
-                case 0 -> otp + "396912";
-                default -> otp;
-            };
-
+        int i  = new Random().nextInt(900000) + 100000;
+        String otp = Integer.toString(i);
 
         return Long.parseLong(otp);
     }
@@ -160,22 +151,77 @@ public class StringUtils {
 
         if(generateCurrentTimeStamp() > expiry){
             System.out.println("CURRENT RIME STAMP : "+generateCurrentTimeStamp() + " OTP EXPIRY : " + expiry);
-            return "OTP is expired";
+            return "OTP is expired.";
         }
 
         final Long code = userOTP.getOtp();
         if(!code.toString().equals(otp)){
-            return "OTP is invalid";
+            return "OTP is invalid.";
         }
 
         final boolean isOtpUsed = userOTP.isOtpIsUsed();
         if(isOtpUsed){
-            return "This OTP has  already been used";
+            return "This OTP has  already been used.";
+        }
+        return null;
+    }
+
+    public static String getUsernameOrMobileError(String usernameOrMobile){
+        if(Objects.equals(usernameOrMobile,"") || usernameOrMobile == null){
+            return "Username or mobile cannot be blank.";
+        }
+        return null;
+    }
+
+    public static String getLoginPasswordError(String usernameOrMobile, String password, UserRepository userRepository) throws NoSuchAlgorithmException {
+        if(Objects.equals(password, "") || password == null){
+            return "Password cannot be blank.";
         }
 
+        final boolean isMobile = usernameOrMobile.matches("[0-9]+");
 
+        boolean usernameOrMobileExists = false;
+        Optional<User> optionalUser = Optional.empty();
+        User user;
 
+        if(isMobile){
+            if(userRepository.existsByMobile(usernameOrMobile)){
+                usernameOrMobileExists = true;
+                optionalUser = userRepository.findByMobile(usernameOrMobile);
+            }
+        }else{
+            if(userRepository.existsByUsername(usernameOrMobile)){
+                usernameOrMobileExists = true;
+                optionalUser = userRepository.findByUsername(usernameOrMobile);
+            }
+        }
 
+        if(!usernameOrMobileExists){
+            return "Incorrect username, mobile or username.";
+        }else{
+            if(optionalUser.isPresent()){
+                user = optionalUser.get();
+
+                final String passwordHash = user.getPassword();
+
+                if(!PasswordUtils.passwordMatches(password, passwordHash)){
+                    return "Incorrect username, mobile or username.";
+                }
+            }
+        }
         return null;
+    }
+
+    public static User getUserFromUsernameOrMobile(String usernameOrMobile, UserRepository userRepository){
+        final boolean isMobile = usernameOrMobile.matches("[0-9]+");
+        Optional<User> optionalUser;
+
+        if(isMobile){
+            optionalUser = userRepository.findByMobile(usernameOrMobile);
+        }else{
+            optionalUser = userRepository.findByUsername(usernameOrMobile);
+        }
+        if(optionalUser.isEmpty()) return null;
+        return optionalUser.get();
     }
 }

@@ -27,8 +27,10 @@ public class OTPResendSuccess implements Callable<ResponseEntity<?>> {
     public ResponseEntity<?> call() {
         data.put(KEY_MOBILE, this.mobile);
         data.put(KEY_MESSAGE,OTP_RESEND_SUCCESS_MESSAGE);
+        data.put(KEY_OTP_VALIDITY, REGISTER_PHONE_VERIFICATION_TIMEOUT);
 
-        toast.put(KEY_TOAST, OTP_RESEND_SUCCESS_MESSAGE);
+
+        toast.put(KEY_MESSAGE, OTP_RESEND_SUCCESS_MESSAGE);
 
         dataPayload.put(KEY_DATA, data);
         toastPayload.put(KEY_TOAST, toast);

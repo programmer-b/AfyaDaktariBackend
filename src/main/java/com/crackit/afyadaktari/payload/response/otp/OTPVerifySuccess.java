@@ -47,7 +47,7 @@ public class OTPVerifySuccess implements Callable<ResponseEntity<?>> {
 
         final String token = new GenerateToken(user).call();
 
-        toast.put(KEY_MESSAGE, OTP_VERIFICATION_SUCCESS);
+        toast.put(KEY_MESSAGE, OTP_VERIFICATION_SUCCESS_MESSAGE);
         data.put(KEY_TOKEN, token);
 
         dataPayload.put(KEY_DATA, data);

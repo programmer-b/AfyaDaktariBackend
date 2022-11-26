@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.concurrent.Callable;
 
+import static com.crackit.afyadaktari.payload.response.login.LoginErrors.getResponseEntity;
 import static com.crackit.afyadaktari.utils.Constants.*;
 
 public class OTPErrors implements Callable<ResponseEntity<?>> {
@@ -25,14 +26,6 @@ public class OTPErrors implements Callable<ResponseEntity<?>> {
     @Override
     public ResponseEntity<?> call() {
         errors.put(KEY_OTP , error);
-        toast.put(KEY_MESSAGE , error);
-
-        errorPayload.put(KEY_ERRORS , errors);
-        toastPayload.put(KEY_TOAST , toast);
-
-        response.put(KEY_ERROR_PAYLOAD, errorPayload);
-        response.put(KEY_TOAST_PAYLOAD, toastPayload);
-
-        return new ResponseEntity<>(response.toMap(), HttpStatus.BAD_REQUEST);
+        return getResponseEntity(toast, error, errorPayload, errors, toastPayload, response);
     }
 }

@@ -11,8 +11,6 @@ import com.crackit.afyadaktari.utils.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 import static com.crackit.afyadaktari.utils.Constants.REGISTER_PHONE_VERIFICATION_TIMEOUT;
 
 @RestController
@@ -24,7 +22,7 @@ public class OTPResend {
         this.otpRepository = otpRepository;
     }
 
-    @GetMapping()
+    @PostMapping()
     public ResponseEntity<?> resendOTP(@RequestHeader(value = "Authorization" , required = false) String token){
         PrepareTokenAuth prepareTokenAuth = new PrepareTokenAuth(token);
         if(prepareTokenAuth.call() != null){

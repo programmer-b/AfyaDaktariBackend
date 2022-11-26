@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import java.util.concurrent.Callable;
 
 public class RegisterErrors implements Callable<ResponseEntity<?>> {
-    public String usernameError;
-    public String mobileError;
-    public String passwordError;
-    public String confirmPasswordError;
+    private final String usernameError;
+    private final String mobileError;
+    private final String passwordError;
+    private final String confirmPasswordError;
 
     public RegisterErrors(String usernameError, String mobileError, String passwordError, String confirmPasswordError) {
         this.usernameError = usernameError;
