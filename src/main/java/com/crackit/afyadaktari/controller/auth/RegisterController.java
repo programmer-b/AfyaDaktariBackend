@@ -41,20 +41,24 @@ public class RegisterController {
         }
 
         final String username = registerDto.username();
-        final String mobile = registerDto.mobile();
+        String mobile = registerDto.mobile();
+        final String confirmMobile = registerDto.confirm_mobile();
         final String password = registerDto.password();
         final String confirmPassword = registerDto.confirm_password();
 
         String usernameError = StringUtils.getUsernameError(username, userRepository);
-        String mobileError = StringUtils.getMobileError(mobile, userRepository);
+        String mobileError = StringUtils.getRegisterMobileError(mobile, userRepository);
+        String confirmMobileError = StringUtils.getConfirmMobileError(mobile,confirmMobile);
         String passwordError = StringUtils.getPasswordError(password);
         String confirmPasswordError = StringUtils.getConfirmPasswordError(password , confirmPassword);
 
-        RegisterErrors errors = new RegisterErrors(usernameError,mobileError,passwordError,confirmPasswordError);
+        RegisterErrors errors = new RegisterErrors(usernameError,mobileError,confirmMobileError,passwordError,confirmPasswordError);
 
         if(errors.call() != null){
             return errors.call();
         }
+
+        mobile = StringUtils.getPhoneCorrFormat(mobile);
 
         User user = new User();
         OTP otp = new OTP();
@@ -71,6 +75,7 @@ public class RegisterController {
 
         otp.setOtp(otp1);
         otp.setUserId(user.getId());
+        otp.setMobile(mobile);
         otp.setCreatedAt(StringUtils.generateCurrentTimeStamp());
         otp.setExpiry(StringUtils.generateCurrentTimeStamp() + REGISTER_PHONE_VERIFICATION_TIMEOUT);
         otp.setOtpIsUsed(false);

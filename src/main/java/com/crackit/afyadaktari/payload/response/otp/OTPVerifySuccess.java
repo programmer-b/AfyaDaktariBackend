@@ -36,7 +36,7 @@ public class OTPVerifySuccess implements Callable<ResponseEntity<?>> {
 
     @Override
     public ResponseEntity<?> call() {
-        UpdateUser updateUser = new UpdateUser(userRepository, user, user.isProfileUpdated(), true);
+        UpdateUser updateUser = new UpdateUser(userRepository, user, user.getPassword(),user.isProfileUpdated(), true);
         user = updateUser.call();
 
         final OTP otp = otpRepository.findByUserId(user.getId()).get();

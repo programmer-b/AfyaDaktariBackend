@@ -15,6 +15,8 @@ public class OTP {
     @Column
     private Long userId;
     @Column
+    private String mobile;
+    @Column
     private Long otp;
     @Column
     private Long createdAt;
@@ -69,6 +71,14 @@ public class OTP {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     @Override

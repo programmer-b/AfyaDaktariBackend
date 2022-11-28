@@ -44,6 +44,14 @@ public class StringUtils {
 
         return null;
     }
+    public static String removeFirstChar(String str){
+        return str.substring(1);
+    }
+    public static String getPhoneCorrFormat(String mobile){
+        if(Objects.equals(mobile.substring(0,5), "+254")) return mobile;
+        mobile = removeFirstChar(mobile);
+        return "+254"+mobile;
+    }
 
     public static boolean isValidMobile(String mobile)
     {
@@ -53,23 +61,48 @@ public class StringUtils {
         Matcher matcher1 = pattern1.matcher(mobile);
         Matcher matcher2 = pattern2.matcher(mobile);
 
+        char firstCharacter = mobile.charAt(0);
+        char plusCharacter = '+';
+        char zeroCharacter = '0';
+
+        if(firstCharacter == plusCharacter){
+            if(!Objects.equals(mobile.substring(0,5), "+254")){
+                return false;
+            }
+        }else{
+            if(firstCharacter != zeroCharacter){
+                return false;
+            }
+        }
+
         return (matcher1.matches() || matcher2.matches());
     }
 
-    public static String getMobileError(String mobile, UserRepository userRepository) {
+    public static String getRegisterMobileError(String mobile, UserRepository userRepository) {
         if(Objects.equals(mobile, "") || mobile == null){
             return  "Phone number cannot be blank.";
         }
 
         if(!isValidMobile(mobile)){
-            return "Please enter a valid phone number";
+            return "Please enter a valid phone number.";
         }
 
-        if(userRepository.existsByMobile(mobile)){
+        if(userRepository.existsByMobile(getPhoneCorrFormat(mobile))){
             return "This phone number is already taken.";
         }
 
         return null;
+    }
+
+    public static String getConfirmMobileError(String mobile,String confirmMobile){
+        if(Objects.equals(confirmMobile, "") || confirmMobile == null){
+            return "Confirm mobile cannot be blank.";
+        }
+        if(mobile.equals(confirmMobile)){
+            return null;
+        } else{
+            return "Your mobile numbers do not match.";
+        }
     }
 
     public static boolean isStrongPassword(String password){
@@ -79,7 +112,7 @@ public class StringUtils {
         int total = password.length();
         if(total<passwordLength)
         {
-            return false;
+            return true;
         }
         else
         {
@@ -96,7 +129,7 @@ public class StringUtils {
                     special = 1;
             }
         }
-        return upChars == 1 && lowChars == 1 && digits == 1 && special == 1;
+        return upChars != 1 || lowChars != 1 || digits != 1 || special != 1;
     }
 
     public static String getPasswordError(String password){
@@ -106,8 +139,8 @@ public class StringUtils {
         if(password.length() < 8){
             return "Your password should be 8 or more characters long.";
         }
-        if(!isStrongPassword(password)){
-            return "Password must have at least 1 upper_case, lower_case, special, and digit characters";
+        if(isStrongPassword(password)){
+            return "Password must have at least 1 upper_case, 1 lower_case, 1 special, and digit characters.";
         }
         return null;
     }
@@ -173,7 +206,7 @@ public class StringUtils {
         return null;
     }
 
-    public static String getLoginPasswordError(String usernameOrMobile, String password, UserRepository userRepository) throws NoSuchAlgorithmException {
+    public static String getLoginPasswordError(String usernameOrMobile, String password, UserRepository userRepository, boolean isChangingPassword) throws NoSuchAlgorithmException {
         if(Objects.equals(password, "") || password == null){
             return "Password cannot be blank.";
         }
@@ -185,11 +218,14 @@ public class StringUtils {
         User user;
 
         if(isMobile){
-            if(userRepository.existsByMobile(usernameOrMobile)){
+            System.out.println("THIS IS MOBILE");
+            final String mobile = getPhoneCorrFormat(usernameOrMobile);
+            if(userRepository.existsByMobile(mobile)){
                 usernameOrMobileExists = true;
-                optionalUser = userRepository.findByMobile(usernameOrMobile);
+                optionalUser = userRepository.findByMobile(mobile);
             }
         }else{
+            System.out.println("THIS IS USERNAME");
             if(userRepository.existsByUsername(usernameOrMobile)){
                 usernameOrMobileExists = true;
                 optionalUser = userRepository.findByUsername(usernameOrMobile);
@@ -217,11 +253,46 @@ public class StringUtils {
         Optional<User> optionalUser;
 
         if(isMobile){
-            optionalUser = userRepository.findByMobile(usernameOrMobile);
+            final String mobile = getPhoneCorrFormat(usernameOrMobile);
+            optionalUser = userRepository.findByMobile(mobile);
         }else{
             optionalUser = userRepository.findByUsername(usernameOrMobile);
         }
         if(optionalUser.isEmpty()) return null;
         return optionalUser.get();
+    }
+    public static String getForgotPasswordError(String mobile, UserRepository userRepository){
+        if(Objects.equals(mobile, "") || mobile == null){
+            return  "Phone number cannot be blank.";
+        }
+
+        if(!userRepository.existsByMobile(getPhoneCorrFormat(mobile))){
+            return "This mobile doesn't exist in our database.";
+        }
+        return null;
+    }
+
+    public static String getResetNewPasswordError(String newPassword){
+        if(Objects.equals(newPassword, "") || newPassword == null){
+            return "Please choose a password";
+        }
+
+        if(newPassword.length() < 8){
+            return "Your password must have at least 8 characters";
+        }
+
+        if(isStrongPassword(newPassword)){
+            return "Your password must at least have 1 special, 1 upper_case, 1 lower_case and 1 digit";
+        }
+        return null;
+    }
+
+    public static String getCurrentPasswordError(String currentPassword, Long userId, UserRepository userRepository) throws NoSuchAlgorithmException {
+        if(Objects.equals(currentPassword,"") || currentPassword == null) return "Current password current be blank";
+
+        final User user = userRepository.findById(userId).get();
+
+        if(!PasswordUtils.passwordMatches(currentPassword, user.getPassword())) return "This password does not match your current password.";
+        return null;
     }
 }

@@ -10,12 +10,14 @@ import java.util.concurrent.Callable;
 public class RegisterErrors implements Callable<ResponseEntity<?>> {
     private final String usernameError;
     private final String mobileError;
+    private final String confirmMobileError;
     private final String passwordError;
     private final String confirmPasswordError;
 
-    public RegisterErrors(String usernameError, String mobileError, String passwordError, String confirmPasswordError) {
+    public RegisterErrors(String usernameError, String mobileError, String confirmMobileError, String passwordError, String confirmPasswordError) {
         this.usernameError = usernameError;
         this.mobileError = mobileError;
+        this.confirmMobileError = confirmMobileError;
         this.passwordError = passwordError;
         this.confirmPasswordError = confirmPasswordError;
     }
@@ -23,7 +25,7 @@ public class RegisterErrors implements Callable<ResponseEntity<?>> {
 
     @Override
     public ResponseEntity<?> call() {
-        if(usernameError != null || mobileError != null || passwordError != null || confirmPasswordError != null){
+        if(usernameError != null || mobileError != null || confirmMobileError != null || passwordError != null || confirmPasswordError != null){
             JSONObject errorMap = new JSONObject();
             JSONObject errorsMap = new JSONObject();
 
@@ -32,6 +34,9 @@ public class RegisterErrors implements Callable<ResponseEntity<?>> {
             }
             if(mobileError != null){
                 errorsMap.put(Constants.KEY_MOBILE , mobileError);
+            }
+            if(confirmMobileError != null){
+                errorsMap.put(Constants.KEY_CONFIRM_MOBILE , confirmMobileError);
             }
             if(passwordError != null){
                 errorsMap.put(Constants.KEY_PASSWORD , passwordError);

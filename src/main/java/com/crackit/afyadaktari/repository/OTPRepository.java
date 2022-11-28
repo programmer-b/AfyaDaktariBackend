@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface OTPRepository extends JpaRepository<OTP, Long>, JpaSpecificationExecutor<OTP> {
     Optional<OTP> findByUserId(Long userId);
-
+    Optional<OTP> findByMobile(String mobile);
     Boolean existsByUserId(Long userId);
 }

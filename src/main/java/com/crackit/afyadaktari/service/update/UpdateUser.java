@@ -12,20 +12,11 @@ public class UpdateUser implements Callable<User> {
     private boolean isMobileVerified = false;
     private boolean isProfileUpdated = false;
 
-    public UpdateUser(UserRepository userRepository, User user) {
-        this.userRepository = userRepository;
-        this.user = user;
-    }
 
-    public UpdateUser(UserRepository userRepository, User user, String password){
+    public UpdateUser(UserRepository userRepository, User user,String password, boolean isProfileUpdated, boolean isMobileVerified){
         this.userRepository = userRepository;
         this.user = user;
         this.password = password;
-    }
-
-    public UpdateUser(UserRepository userRepository, User user, boolean isProfileUpdated, boolean isMobileVerified){
-        this.userRepository = userRepository;
-        this.user = user;
         this.isMobileVerified = isMobileVerified;
         this.isProfileUpdated = isProfileUpdated;
     }

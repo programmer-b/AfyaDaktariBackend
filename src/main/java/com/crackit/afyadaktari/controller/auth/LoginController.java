@@ -40,7 +40,7 @@ public class LoginController {
         final String password = loginDto.get(KEY_PASSWORD);
 
         final String usernameOrMobileError = StringUtils.getUsernameOrMobileError(usernameOrMobile);
-        final String passwordError = StringUtils.getLoginPasswordError(usernameOrMobile,password,userRepository);
+        final String passwordError = StringUtils.getLoginPasswordError(usernameOrMobile,password,userRepository, false);
 
         LoginErrors loginErrors = new LoginErrors(usernameOrMobileError, passwordError);
         if(loginErrors.call() != null){
